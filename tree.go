@@ -35,6 +35,35 @@ type I3Node struct {
 	Urgent             bool
 	Focused            bool
 	Nodes              []I3Node
+	FloatingNodes      []I3Node `json:"floating_nodes"`
+	Parent             *I3Node
+
+	// Properties, not listed in docs:
+	Sticky            bool
+	Floating          string
+	Last_Split_Layout string `json:"last_split_layout"`
+	Fullscreen_Mode   int32  `json:"fullscreen_mode"`
+	Scratchpad_State  string `json:"scratchpad_state"`
+	Workspace_Layout  string `json:"workspace_layout"`
+
+	WindowProperties struct {
+		Title    string
+		Instance string
+		Class    string
+	} `json:"window_properties"`
+}
+
+// Traverses the tree setting correct reference to a parent node.
+func setParent(node, parent *I3Node) {
+
+	node.Parent = parent
+
+	for i := range node.Nodes {
+		setParent(&node.Nodes[i], node)
+	}
+	for i := range node.FloatingNodes {
+		setParent(&node.FloatingNodes[i], node)
+	}
 }
 
 // GetTree fetches the layout tree.
@@ -45,6 +74,8 @@ func (socket *IPCSocket) GetTree() (root I3Node, err error) {
 	}
 
 	err = json.Unmarshal(jsonReply, &root)
+	defer setParent(&root, nil)
+
 	if err == nil {
 		return
 	}
