@@ -119,6 +119,20 @@ func (self *I3Node) FindNamed(name string) []*I3Node {
 	return found
 }
 
+// Returns nodes which class matches the regexp.
+func (self *I3Node) FindClassed(class string) []*I3Node {
+	nodes := self.Descendents()
+	reClass := regexp.MustCompile(class)
+	var found []*I3Node
+
+	for _, node := range nodes {
+		if reClass.MatchString(node.WindowProps.Class) {
+			found = append(found, node)
+		}
+	}
+	return found
+}
+
 // Looks for a workspace up the tree.
 func (self *I3Node) Workspace() *I3Node {
 

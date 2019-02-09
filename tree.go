@@ -40,12 +40,12 @@ type I3Node struct {
 	Parent             *I3Node
 
 	// Properties, not listed in docs:
-	Window_Properties struct {
+	WindowProps struct {
 		// Transient_for ?
 		Title    string
 		Instance string
 		Class    string
-	}
+	} `json:"window_properties"`
 	// Swallows []I3Node ?
 	Sticky            bool
 	Floating          string
