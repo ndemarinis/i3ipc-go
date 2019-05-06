@@ -50,10 +50,11 @@ type I3Node struct {
 	Sticky            bool
 	Floating          string
 	Last_Split_Layout string
-	// Focus []I3Node ?
-	Fullscreen_Mode  int32
-	Scratchpad_State string
-	Workspace_Layout string
+	Focus             []int64
+	FocusOrder        []*I3Node
+	Fullscreen_Mode   int32
+	Scratchpad_State  string
+	Workspace_Layout  string
 }
 
 // Traverses the tree setting correct reference to a parent node.
@@ -69,14 +70,38 @@ func setParent(node, parent *I3Node) {
 	}
 }
 
+func setFocusList(node *I3Node) {
+	node.FocusOrder = make([]*I3Node, len(node.Nodes))
+
+	for i := range node.Focus {
+		for n := range node.Nodes {
+			curr := node.Nodes[n]
+			if curr.ID == node.Focus[i] {
+				node.FocusOrder[i] = &curr
+			}
+		}
+	}
+
+	for i := range node.Nodes {
+		setFocusList(&node.Nodes[i])
+	}
+}
+
+func parseTree(root *I3Node) {
+	setParent(root, nil)
+	setFocusList(root)
+}
+
 // GetTree fetches the layout tree.
 func (socket *IPCSocket) GetTree() (root I3Node, err error) {
 	jsonReply, err := socket.Raw(I3GetTree, "")
 	if err != nil {
 		return
 	}
+	// fmt.Printf("%s\n", string(jsonReply))
+	// panic("")
 
-	defer setParent(&root, nil)
+	defer parseTree(&root)
 
 	err = json.Unmarshal(jsonReply, &root)
 	if err == nil {
