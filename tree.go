@@ -32,7 +32,7 @@ type I3Node struct {
 	WindowRect         Rect
 	DecoRect           Rect `json:"deco_rect"`
 	Geometry           Rect
-	Window             int32
+	Window             int64
 	Urgent             bool
 	Focused            bool
 	Floating_Nodes     []I3Node

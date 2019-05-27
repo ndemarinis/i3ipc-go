@@ -92,7 +92,7 @@ func (self *I3Node) FindByID(ID int64) *I3Node {
 }
 
 // Returns a node that has given window id.
-func (self *I3Node) FindByWindow(window int32) *I3Node {
+func (self *I3Node) FindByWindow(window int64) *I3Node {
 
 	nodes := self.Descendents()
 

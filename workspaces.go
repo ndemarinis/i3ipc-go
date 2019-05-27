@@ -19,7 +19,7 @@ import (
 // Workspace represents a workspace. For documentation of the fields,
 // refer to http://i3wm.org/docs/ipc.html#_workspaces_reply.
 type Workspace struct {
-	Num     int32
+	Num     int64
 	Name    string
 	Visible bool
 	Focused bool
@@ -30,10 +30,10 @@ type Workspace struct {
 
 // Rect represents the geometry of a window, output or workspace.
 type Rect struct {
-	X      int32
-	Y      int32
-	Width  int32
-	Height int32
+	X      int64
+	Y      int64
+	Width  int64
+	Height int64
 }
 
 // GetWorkspaces fetches a list of all current workspaces.
