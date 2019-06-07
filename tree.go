@@ -71,7 +71,8 @@ func setParent(node, parent *I3Node) {
 }
 
 func setFocusList(node *I3Node) {
-	node.FocusOrder = make([]*I3Node, len(node.Nodes))
+	totalNodes := len(node.Nodes) + len(node.Floating_Nodes)
+	node.FocusOrder = make([]*I3Node, totalNodes)
 
 	for i := range node.Focus {
 		for n := range node.Nodes {
@@ -80,10 +81,22 @@ func setFocusList(node *I3Node) {
 				node.FocusOrder[i] = &curr
 			}
 		}
+
+		for n := range node.Floating_Nodes {
+			curr := node.Floating_Nodes[n]
+			if curr.ID == node.Focus[i] {
+				node.FocusOrder[i] = &curr
+			}
+		}
+
 	}
 
 	for i := range node.Nodes {
 		setFocusList(&node.Nodes[i])
+	}
+
+	for i := range node.Floating_Nodes {
+		setFocusList(&node.Floating_Nodes[i])
 	}
 }
 
@@ -98,8 +111,6 @@ func (socket *IPCSocket) GetTree() (root I3Node, err error) {
 	if err != nil {
 		return
 	}
-	// fmt.Printf("%s\n", string(jsonReply))
-	// panic("")
 
 	defer parseTree(&root)
 
