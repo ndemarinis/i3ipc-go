@@ -37,6 +37,7 @@ type I3Node struct {
 	Focused            bool
 	Floating_Nodes     []I3Node
 	Nodes              []I3Node
+	Marks              []string
 	Parent             *I3Node
 
 	// Properties, not listed in docs:
