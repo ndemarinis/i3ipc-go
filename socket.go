@@ -15,6 +15,7 @@ package i3ipc
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net"
 	"os/exec"
 	"strings"
@@ -137,7 +138,7 @@ func (socket *IPCSocket) recv() (msg Message, err error) {
 	length := *(*int32)(unsafe.Pointer(&bytelen))
 
 	msg.Payload = make([]byte, length)
-	n, err = socket.socket.Read(msg.Payload)
+	n, err = io.ReadFull(socket.socket, msg.Payload)
 	if n != int(length) || err != nil {
 		return
 	}
