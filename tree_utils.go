@@ -65,6 +65,19 @@ func (self *I3Node) Workspaces() (workspaces []*I3Node) {
 	return
 }
 
+func (self *I3Node) FindMarked(mark string) *I3Node {
+	nodes := self.Descendents()
+
+	for _, node := range nodes {
+		for _, m := range node.Marks {
+			if m == mark {
+				return node
+			}
+		}
+	}
+	return nil
+}
+
 // Returns a node that is being focused now.
 func (self *I3Node) FindFocused() *I3Node {
 
